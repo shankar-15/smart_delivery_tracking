@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
-        fontFamily: "Roboto"
+        fontFamily: "Poppins"
       ),
-      home: const splashscreen(),
+      home: const SplashScreen(),
     );
   }
 }
