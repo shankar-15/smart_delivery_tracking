@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Registration.dart';
+import 'bottomnavigation.dart';
 //import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -48,14 +49,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onLoginPressed() {
     if (_formKey.currentState?.validate() ?? false) {
-      // All validations passed
       setState(() => _isLoading = true);
 
-      // TODO: call your login API / Firebase here
+      // TODO: replace with real login API
       Future.delayed(const Duration(seconds: 1), () {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login successful (dummy)')),
+
+        // ✅ Navigate to main home with bottom navigation
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainHomeScreen()),
         );
       });
     }

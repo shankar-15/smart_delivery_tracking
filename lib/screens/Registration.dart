@@ -85,7 +85,9 @@ class RegisterScreen extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1976D2),
                         ),
-                        child: const Text('Create Account'),
+                        child: const Text('Create Account',style: TextStyle(
+                          color: Colors.white
+                        ),),
                       ),
                     )
                   ],
