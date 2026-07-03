@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:sos_application/screens/splashscreen.dart';
+
+import 'core/theme/app_theme.dart';
+import 'feature/splash/presentation/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(const TracklyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TracklyApp extends StatelessWidget {
+  const TracklyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Trackly',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        fontFamily: "Poppins"
-      ),
+
+      theme: AppTheme.lightTheme,
+
       home: const SplashScreen(),
     );
   }
 }
-
-
