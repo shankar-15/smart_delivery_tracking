@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sos_application/feature/home/presentation/homescreen.dart';
+import 'package:sos_application/feature/registration/presentation/registration.dart';
 
 import '../../../../core/constant/app_string.dart';
 import '../../../../core/widget/app_textfield.dart';
@@ -61,15 +63,27 @@ class _LoginScreenState extends State<LoginScreen> {
     Future.delayed(
       const Duration(seconds: 2),
           () {
+            Navigator.push(
+
+              context,
+
+              MaterialPageRoute(
+
+                builder: (_) => const HomeTab(),
+
+              ),
+
+            );
 
         setState(() {
           isLoading = false;
         });
 
-        // TODO
-        // Navigate Home
-        // Call API
-      },
+          }
+
+
+
+
     );
   }
 
@@ -256,17 +270,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         onPressed: () {
 
-                          // Navigator.push(
-                          //
-                          //   context,
-                          //
-                          //   MaterialPageRoute(
-                          //
-                          //     builder: (_) => const RegisterScreen(),
-                          //
-                          //   ),
-                          //
-                          // );
+                          Navigator.push(
+
+                            context,
+
+                            MaterialPageRoute(
+
+                              builder: (_) => const RegisterScreen(),
+
+                            ),
+
+                          );
 
                         },
 

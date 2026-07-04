@@ -2,7 +2,7 @@ class AppAssets {
   AppAssets._();
 
   // Images
-  static const String logo = 'assets/images/logo.png';
+  static const String logo = 'assets/images/logo1.png';
   static const String logoWhite = 'assets/images/logo_white.png';
 
   // Icons
