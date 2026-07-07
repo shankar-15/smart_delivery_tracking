@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sos_application/feature/auth/login/presentation/registration.dart';
 
 import '../../../../core/constant/app_string.dart';
 import '../../../../core/widget/app_textfield.dart';
 import '../../../../core/widget/password_textfield.dart';
 import '../../../../core/widget/primary_button.dart';
+import '../../../homescreen/presentation/main_homescreen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final _formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -22,87 +24,94 @@ class _LoginScreenState extends State<LoginScreen> {
   bool rememberMe = false;
   bool isLoading = false;
 
-  String? emailValidator(String? value) {
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
-    if (value == null || value.isEmpty) {
-      return "Please enter email";
+  String? emailValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter your email";
     }
 
-    if (!RegExp(
-      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-    ).hasMatch(value)) {
-      return "Invalid email";
+    final regex =
+    RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    if (!regex.hasMatch(value.trim())) {
+      return "Enter a valid email";
     }
 
     return null;
   }
 
   String? passwordValidator(String? value) {
-
     if (value == null || value.isEmpty) {
       return "Please enter password";
     }
 
     if (value.length < 8) {
-      return "Minimum 8 characters";
+      return "Password must be at least 8 characters";
     }
 
     return null;
   }
 
-  void login() {
-
+  Future<void> login() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       isLoading = true;
     });
 
-    Future.delayed(
-      const Duration(seconds: 2),
-          () {
+    await Future.delayed(const Duration(seconds: 2));
 
-        setState(() {
-          isLoading = false;
-        });
+    setState(() {
+      isLoading = false;
+    });
 
-        // TODO
-        // Navigate Home
-        // Call API
-      },
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Login Successful (Dummy)"),
+      ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+        const MainHomeScreen(),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       body: SafeArea(
-
         child: Center(
-
           child: SingleChildScrollView(
-
-            padding: const EdgeInsets.all(24),
-
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 16,
+            ),
             child: Form(
-
               key: _formKey,
-
               child: Column(
-
                 children: [
-
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: 120,
+                  Hero(
+                    tag: "logo",
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 110,
+                    ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
 
                   const Text(
-                    "Welcome Back",
+                    "Welcome Back 👋",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -112,9 +121,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
 
                   Text(
-                    "Sign in to continue tracking deliveries",
+                    "Sign in to continue your deliveries",
                     style: TextStyle(
                       color: Colors.grey.shade600,
+                      fontSize: 15,
                     ),
                   ),
 
@@ -135,165 +145,119 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: passwordValidator,
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
 
                   Row(
-
                     children: [
-
                       Checkbox(
-
                         value: rememberMe,
-
                         onChanged: (value) {
-
                           setState(() {
-
-                            rememberMe = value!;
-
+                            rememberMe = value ?? false;
                           });
-
                         },
-
                       ),
 
-                      const Text("Remember Me"),
+                      const Text(
+                        "Remember Me",
+                      ),
 
                       const Spacer(),
 
                       TextButton(
-
                         onPressed: () {},
-
                         child: const Text(
                           "Forgot Password?",
                         ),
-
                       ),
-
                     ],
-
                   ),
 
                   const SizedBox(height: 20),
 
                   PrimaryButton(
-
-                    text: AppStrings.login,
-
-                    isLoading: isLoading,
-
+                    text: "Sign In",
                     onPressed: login,
-
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  Row(
-
-                    children: const [
-
-                      Expanded(child: Divider()),
-
-                      Padding(
-
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-
-                        child: Text("OR"),
-
-                      ),
-
-                      Expanded(child: Divider()),
-
-                    ],
-
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  SizedBox(
-
-                    width: double.infinity,
-
-                    height: 55,
-
-                    child: OutlinedButton.icon(
-
-                      icon: Image.asset(
-                        "assets/icons/google.png",
-                        width: 24,
-                      ),
-
-                      label: const Text(
-                        "Continue with Google",
-                      ),
-
-                      onPressed: () {
-
-                        // Tomorrow
-
-                        // Firebase Google Login
-
-                      },
-
-                    ),
-
+                    isLoading: isLoading,
                   ),
 
                   const SizedBox(height: 30),
 
                   Row(
+                    children: const [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("OR"),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
 
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  const SizedBox(height: 30),
 
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(14),
+                        ),
+                      ),
+                      icon: Image.asset(
+                        "assets/icons/google.png",
+                        width: 24,
+                      ),
+                      label: const Text(
+                        "Continue with Google",
+                      ),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Google Sign In coming soon",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 35),
+
+                  Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment.center,
                     children: [
-
                       const Text(
                         "Don't have an account?",
                       ),
-
                       TextButton(
-
                         onPressed: () {
-
-                          // Navigator.push(
-                          //
-                          //   context,
-                          //
-                          //   MaterialPageRoute(
-                          //
-                          //     builder: (_) => const RegisterScreen(),
-                          //
-                          //   ),
-                          //
-                          // );
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                              const RegisterScreen(),
+                            ),
+                          );
                         },
-
                         child: const Text(
                           "Create Account",
                         ),
-
-                      )
-
+                      ),
                     ],
-
-                  )
-
+                  ),
                 ],
-
               ),
-
             ),
-
           ),
-
         ),
-
       ),
-
     );
-
   }
-
 }

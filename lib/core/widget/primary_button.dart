@@ -13,7 +13,7 @@ class PrimaryButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.isLoading = false,
-    this.icon,
+    this.icon, required 
   });
 
   @override
