@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constant/app_string.dart';
 import '../../../core/theme/appcolor.dart';
-import '../../auth/login/presentation/login_screen.dart';
+import '../../auth/login/presentation/login/login_screen.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -16,221 +16,218 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _textController;
 
-  late Animation<double> _logoScale;
-  late Animation<double> _logoFade;
+  late AnimationController _controller;
 
-  late Animation<double> _textFade;
-  late Animation<Offset> _textSlide;
-
-  final List<String> loadingMessages = [
-    "Initializing...",
-    "Loading preferences...",
-    "Preparing deliveries...",
-    "Almost Ready..."
-  ];
-
-  int currentMessage = 0;
+  late Animation<double> truckAnimation;
+  late Animation<double> logoScale;
+  late Animation<double> textOpacity;
 
   @override
   void initState() {
     super.initState();
 
-    _logoController = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 3200),
     );
 
-    _textController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
+    truckAnimation = Tween<double>(
+      begin: -1.2,
+      end: 1.2,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(
+          .15,
+          .75,
+          curve: Curves.easeInOut,
+        ),
+      ),
     );
 
-    _logoScale = Tween<double>(
+    logoScale = Tween<double>(
+      begin: .5,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(
+          0,
+          .45,
+          curve: Curves.elasticOut,
+        ),
+      ),
+    );
+
+    textOpacity = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(
       CurvedAnimation(
-        parent: _logoController,
-        curve: Curves.elasticOut,
+        parent: _controller,
+        curve: const Interval(
+          .45,
+          .9,
+          curve: Curves.easeIn,
+        ),
       ),
     );
 
-    _logoFade = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(_logoController);
+    _controller.forward();
 
-    _textFade = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(_textController);
-
-    _textSlide = Tween<Offset>(
-      begin: const Offset(0, .3),
-      end: Offset.zero,
-    ).animate(_textController);
-
-    _initialize();
-  }
-
-  Future<void> _initialize() async {
-    _logoController.forward();
-
-    await Future.delayed(const Duration(milliseconds: 700));
-
-    _textController.forward();
-
-    Timer.periodic(
-      const Duration(milliseconds: 600),
-          (timer) {
-        if (currentMessage == loadingMessages.length - 1) {
-          timer.cancel();
-        } else {
-          setState(() {
-            currentMessage++;
-          });
-        }
+    Future.delayed(
+      const Duration(milliseconds: 3400),
+          () {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration:
+            const Duration(milliseconds: 700),
+            pageBuilder: (_, __, ___) =>
+            const LoginScreen(),
+            transitionsBuilder:
+                (_, animation, __, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
       },
-    );
-
-    await Future.delayed(const Duration(seconds: 3));
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 700),
-        pageBuilder: (_, __, ___) => const LoginScreen(),
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-      ),
     );
   }
 
   @override
   void dispose() {
-    _logoController.dispose();
-    _textController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF8FAFC),
-      body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white,
-                Color(0xffF3F8FF),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+      backgroundColor: Colors.white,
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (_, __) {
+          return Center(
+            child: Column(
+              mainAxisAlignment:
+              MainAxisAlignment.center,
+              children: [
 
-                  FadeTransition(
-                    opacity: _logoFade,
-                    child: ScaleTransition(
-                      scale: _logoScale,
-                      child: Hero(
-                        tag: "logo",
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          width: 120,
+                ScaleTransition(
+                  scale: logoScale,
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 95,
+                  ),
+                ),
+
+                const SizedBox(height: 45),
+
+                SizedBox(
+                  width: 320,
+                  height: 90,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+
+                      Positioned(
+                        left: 20,
+                        right: 20,
+                        child: Container(
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.blue
+                                .withOpacity(.15),
+                            borderRadius:
+                            BorderRadius.circular(20),
+                          ),
                         ),
                       ),
-                    ),
+
+                      Align(
+                        alignment: Alignment(
+                          truckAnimation.value,
+                          0,
+                        ),
+                        child: Transform.rotate(
+                          angle: -.05,
+                          child: Container(
+                            padding:
+                            const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 15,
+                                  color: Colors.black
+                                      .withOpacity(.08),
+                                )
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.local_shipping,
+                              color: AppColors.primary,
+                              size: 42,
+                            ),
+                          ),
+                        ),
+                      )
+
+                    ],
                   ),
+                ),
 
-                  const SizedBox(height: 35),
+                const SizedBox(height: 35),
 
-                  FadeTransition(
-                    opacity: _textFade,
-                    child: SlideTransition(
-                      position: _textSlide,
-                      child: Text(
-                        AppStrings.appName,
-                        style: const TextStyle(
+                FadeTransition(
+                  opacity: textOpacity,
+                  child: Column(
+                    children: const [
+
+                      Text(
+                        "Trackly",
+                        style: TextStyle(
                           fontSize: 34,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
+                          fontWeight:
+                          FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 10),
+                      SizedBox(height: 8),
 
-                  FadeTransition(
-                    opacity: _textFade,
-                    child: const Text(
-                      "Delivering Beyond Expectations",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                        letterSpacing: .5,
+                      Text(
+                        "Smart Courier Tracking",
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
+
+                    ],
                   ),
+                ),
 
-                  const SizedBox(height: 55),
+                const SizedBox(height: 45),
 
-                  const SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      color: AppColors.primary,
-                    ),
+                const SizedBox(
+                  width: 28,
+                  height: 28,
+                  child:
+                  CircularProgressIndicator(
+                    strokeWidth: 2.5,
                   ),
+                )
 
-                  const SizedBox(height: 25),
-
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Text(
-                      loadingMessages[currentMessage],
-                      key: ValueKey(currentMessage),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
-          ),
-        ),
-      ),
-
-      bottomNavigationBar: const Padding(
-        padding: EdgeInsets.only(bottom: 20),
-        child: Text(
-          "Version 1.0.0",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
-          ),
-        ),
+          );
+        },
       ),
     );
   }

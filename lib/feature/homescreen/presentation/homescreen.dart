@@ -5,14 +5,18 @@ import '../../../core/theme/appcolor.dart';
 import 'bookcourierscreen.dart';
 import 'main_homescreen.dart';
 
-class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController trackingController = TextEditingController();
 
   @override
-  Future<Widget> build(BuildContext context) async {
+  Widget  build(BuildContext context)  {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -122,13 +126,14 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.add_box_rounded,
                       title: "Book\nCourier",
                       color: Colors.blue,
-                      onTap: ()=>  Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                          const BookCourierScreen(),
-                        ),
-                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const BookCourierScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
 
@@ -139,7 +144,12 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.local_shipping_rounded,
                       title: "Track\nShipment",
                       color: Colors.orange,
-                      onTap: () {},
+                      onTap: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TrackingDetailsScreen(trackingId: '',),
+                        ),
+                      );},
                     ),
                   ),
 
