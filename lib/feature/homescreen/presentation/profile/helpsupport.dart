@@ -169,6 +169,8 @@ class HelpSupportScreen extends StatelessWidget {
       ),
     );
   }
+  //https://chatgpt.com/share/6a4e4660-137c-83e8-a3f1-40eb092b7e1d
+
 
   Widget _supportTile({
     required IconData icon,
