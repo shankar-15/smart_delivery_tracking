@@ -1,4 +1,4 @@
-# sos_application
+# Smart_Courier_Tracking application
 
 A new Flutter project.
 
